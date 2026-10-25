@@ -5,6 +5,20 @@ const CATEGORY_BY_KEYCODE = {
   [UiohookKey.Enter]: 'ENTER',
   [UiohookKey.NumpadEnter]: 'ENTER',
   [UiohookKey.Backspace]: 'BACKSPACE',
+  [UiohookKey.Tab]: 'TAB',
+  [UiohookKey.Escape]: 'ESCAPE',
+  [UiohookKey.ArrowUp]: 'ARROWS',
+  [UiohookKey.ArrowDown]: 'ARROWS',
+  [UiohookKey.ArrowLeft]: 'ARROWS',
+  [UiohookKey.ArrowRight]: 'ARROWS',
+  [UiohookKey.Ctrl]: 'MODIFIERS',
+  [UiohookKey.CtrlRight]: 'MODIFIERS',
+  [UiohookKey.Alt]: 'MODIFIERS',
+  [UiohookKey.AltRight]: 'MODIFIERS',
+  [UiohookKey.Shift]: 'MODIFIERS',
+  [UiohookKey.ShiftRight]: 'MODIFIERS',
+  [UiohookKey.Meta]: 'MODIFIERS',
+  [UiohookKey.MetaRight]: 'MODIFIERS',
 };
 
 function categoryFor(keycode) {

@@ -1,9 +1,14 @@
 {
-  "name": "actuate",
-  "productName": "Actuate",
-  "version": "0.1.0",
+  "name": "keyclick",
+  "productName": "KeyClick",
+  "version": "0.2.1",
   "description": "Mechanical keyboard sounds for any keyboard.",
   "private": true,
+  "author": "Rakhman Muratbek",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rakhumn/keyclick"
+  },
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
@@ -24,14 +29,15 @@
     "uiohook-napi@1.5.5": true
   },
   "build": {
-    "appId": "dev.anujpatel.actuate",
-    "productName": "Actuate",
+    "appId": "com.rakhumn.keyclick",
+    "productName": "KeyClick",
     "directories": {
       "output": "release"
     },
     "icon": "build/icon.png",
     "files": [
       "src/**/*",
+      "build/icon.png",
       "package.json"
     ],
     "extraResources": [
@@ -42,7 +48,11 @@
     ],
     "mac": {
       "target": "dmg",
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "identity": null,
+      "extendInfo": {
+        "LSUIElement": true
+      }
     },
     "dmg": {
       "contents": [
@@ -71,6 +81,7 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
-    }
+    },
+    "afterPack": "build/afterPack.js"
   }
 }

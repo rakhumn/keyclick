@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Actuate</title>
-<meta name="description" content="Actuate gives any keyboard a real mechanical-switch sound on every keypress — a background app for macOS and Windows, recorded from 13 real switches, with under 20ms latency and no keystroke logging.">
+<title>KeyClick</title>
+<meta name="description" content="KeyClick gives any keyboard a real mechanical-switch sound on every keypress — a background app for macOS and Windows, recorded from 13 real switches, with under 20ms latency and no keystroke logging.">
 <meta name="theme-color" content="#16151c">
 <script>
   (function () {
-    var saved = localStorage.getItem('actuate-theme');
+    var saved = localStorage.getItem('keyclick-theme');
     if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
   })();
 </script>
@@ -17,11 +17,11 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Actuate">
+<meta property="og:title" content="KeyClick">
 <meta property="og:description" content="A real mechanical-switch sound on every keypress, on any keyboard. Background app for macOS and Windows.">
 <meta property="og:image" content="/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Actuate">
+<meta name="twitter:title" content="KeyClick">
 <meta name="twitter:description" content="A real mechanical-switch sound on every keypress, on any keyboard. Background app for macOS and Windows.">
 <meta name="twitter:image" content="/og-image.png">
 
@@ -802,7 +802,7 @@
 
 <div class="wrap">
   <div class="topbar">
-    <div class="wordmark"><svg class="icon" aria-hidden="true"><use href="#icon-mark"></use></svg>Actuate</div>
+    <div class="wordmark"><svg class="icon" aria-hidden="true"><use href="#icon-mark"></use></svg>KeyClick</div>
     <nav>
       <a href="#packs">Sound packs</a>
       <a href="#how">How it works</a>
@@ -812,7 +812,7 @@
         <svg class="icon icon-moon-mark" aria-hidden="true"><use href="#icon-moon"></use></svg>
         <span class="knob"></span>
       </button>
-      <a class="btn btn-primary" href="https://github.com/anujpatel224/actuate/releases">
+      <a class="btn btn-primary" href="https://github.com/rakhumn/keyclick/releases">
         <svg class="icon" aria-hidden="true"><use href="#icon-download"></use></svg>Download
       </a>
     </nav>
@@ -822,17 +822,17 @@
     <div>
       <p class="eyebrow">Background app · macOS &amp; Windows</p>
       <h1>Every key has an <em>actuation point</em>.<br>Now it has a sound.</h1>
-      <p class="lede">Actuate listens for every keypress on your machine and answers with a real mechanical click — recorded from actual switches, not synthesized. Works in any app, even while it's not focused.</p>
+      <p class="lede">KeyClick listens for every keypress on your machine and answers with a real mechanical click — recorded from actual switches, not synthesized. Works in any app, even while it's not focused.</p>
       <div class="btn-row">
-        <a class="btn btn-primary" href="https://github.com/anujpatel224/actuate/releases">
+        <a class="btn btn-primary" href="https://github.com/rakhumn/keyclick/releases">
           <svg class="icon" aria-hidden="true"><use href="#icon-download"></use></svg>Download for Mac &amp; Windows
         </a>
-        <a class="btn btn-secondary" href="https://github.com/anujpatel224/actuate">
+        <a class="btn btn-secondary" href="https://github.com/rakhumn/keyclick">
           <svg class="icon" aria-hidden="true"><use href="#icon-code"></use></svg>View source
         </a>
       </div>
       <div class="hero-meta">
-        <span>13 recorded switch packs</span>
+        <span>13 recorded switch packs + Funny Mode</span>
         <span>&lt; 20ms hook-to-sound</span>
         <span>No keystrokes ever logged</span>
       </div>
@@ -861,7 +861,7 @@
   <section id="specs">
     <div class="specs">
       <div class="spec"><div class="k"><svg class="icon" aria-hidden="true"><use href="#icon-pulse"></use></svg>Latency</div><div class="v">&lt; 20ms hook to sound</div></div>
-      <div class="spec"><div class="k"><svg class="icon" aria-hidden="true"><use href="#icon-stack"></use></svg>Switch packs</div><div class="v">13 recorded sets</div></div>
+      <div class="spec"><div class="k"><svg class="icon" aria-hidden="true"><use href="#icon-stack"></use></svg>Switch packs</div><div class="v">13 recorded + Funny Mode</div></div>
       <div class="spec"><div class="k"><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg>Privacy</div><div class="v">Keystrokes never logged</div></div>
       <div class="spec"><div class="k"><svg class="icon" aria-hidden="true"><use href="#icon-monitor"></use></svg>Platforms</div><div class="v">macOS · Windows</div></div>
     </div>
@@ -904,7 +904,7 @@
       <div class="mark"><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg></div>
       <div>
         <h3>Nothing you type is ever recorded.</h3>
-        <p>Actuate only sees that a key went down and when — never which characters they spell out, and secure fields (password boxes) are invisible to it by OS design. It's a personal, unsigned build: no analytics, no network calls, nothing leaves your machine.</p>
+        <p>KeyClick only sees that a key went down and when — never which characters they spell out, and secure fields (password boxes) are invisible to it by OS design. It's a personal, unsigned build: no analytics, no network calls, nothing leaves your machine.</p>
       </div>
     </div>
   </section>
@@ -912,8 +912,8 @@
   <div class="keyrow"><svg class="icon" aria-hidden="true"><use href="#icon-keyrow"></use></svg></div>
 
   <footer>
-    <div class="foot-word"><svg class="icon" aria-hidden="true" style="width:14px;height:14px;color:var(--accent);vertical-align:-2px;margin-right:6px"><use href="#icon-mark"></use></svg>Actuate</div>
-    <div class="foot-line">Built for people who miss the click. <a href="https://github.com/anujpatel224/actuate" style="color:var(--ink-dim)">Source on GitHub →</a></div>
+    <div class="foot-word"><svg class="icon" aria-hidden="true" style="width:14px;height:14px;color:var(--accent);vertical-align:-2px;margin-right:6px"><use href="#icon-mark"></use></svg>KeyClick</div>
+    <div class="foot-line">Built for people who miss the click. <a href="https://github.com/rakhumn/keyclick" style="color:var(--ink-dim)">Source on GitHub →</a></div>
   </footer>
 </div>
 
@@ -1013,7 +1013,7 @@
   themeToggle.addEventListener("click", () => {
     const next = currentTheme() === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("actuate-theme", next);
+    localStorage.setItem("keyclick-theme", next);
     themeToggle.setAttribute("aria-pressed", String(next === "dark"));
   });
 </script>

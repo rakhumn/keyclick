@@ -1,66 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Actuate Settings</title>
-<style>
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    margin: 0;
-    padding: 20px;
-    background: #f5f5f7;
-    color: #1d1d1f;
-  }
-  h1 {
-    font-size: 15px;
-    font-weight: 600;
-    margin: 0 0 16px;
-  }
-  .row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-  label {
-    font-size: 13px;
-  }
-  select, input[type="range"] {
-    width: 180px;
-  }
-  .hint {
-    font-size: 11px;
-    color: #86868b;
-    margin-top: -8px;
-    margin-bottom: 14px;
-  }
-</style>
+<title>KeyClick Settings</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self' file:; img-src 'self' file:">
+<link rel="stylesheet" href="settings.css">
 </head>
 <body>
-  <h1>Actuate</h1>
+<div class="app">
+  <nav class="sidebar" aria-label="Settings sections">
+    <div class="sidebar-head">
+      <img src="../../build/icon.png" alt="" class="sidebar-icon">
+      <span class="sidebar-title">KeyClick</span>
+    </div>
+    <button class="nav-item active" data-page="general">General</button>
+    <button class="nav-item" data-page="packs">Sound Packs</button>
+    <button class="nav-item" data-page="keys">Key Sounds</button>
+    <button class="nav-item" data-page="shortcuts">Shortcuts</button>
+    <button class="nav-item" data-page="about">About</button>
+  </nav>
 
-  <div class="row">
-    <label for="enabled">Enabled</label>
-    <input type="checkbox" id="enabled">
-  </div>
+  <main class="content">
+    <div id="banner" class="banner hidden" role="alert">
+      <span id="banner-text"></span>
+      <button id="banner-action" class="btn hidden"></button>
+    </div>
 
-  <div class="row">
-    <label for="pack">Switch sound</label>
-    <select id="pack"></select>
-  </div>
+    <section id="page-general" class="page active">
+      <h1>General</h1>
+      <p class="page-desc">Core behavior of KeyClick.</p>
 
-  <div class="row">
-    <label for="volume">Volume</label>
-    <input type="range" id="volume" min="0" max="1" step="0.01">
-  </div>
+      <div class="group">
+        <h2>Sound</h2>
+        <div class="row">
+          <div>
+            <label for="enabled">Keyboard sounds</label>
+            <p class="hint">Play a mechanical click on every keypress.</p>
+          </div>
+          <span class="switch"><input type="checkbox" id="enabled"><span></span></span>
+        </div>
+        <div class="row">
+          <div><label for="volume">Master volume</label></div>
+          <input type="range" id="volume" min="0" max="1" step="0.01">
+        </div>
+        <div class="row">
+          <div>
+            <label for="pack-select">Sound pack</label>
+            <p class="hint">Full list with previews on the Sound Packs page.</p>
+          </div>
+          <select id="pack-select"></select>
+        </div>
+      </div>
 
-  <div class="row">
-    <label for="launchAtLogin">Launch at login</label>
-    <input type="checkbox" id="launchAtLogin">
-  </div>
+      <div class="group">
+        <h2>Startup</h2>
+        <div class="row">
+          <div>
+            <label for="launchAtLogin">Launch at login</label>
+            <p class="hint">Start KeyClick automatically when you sign in. Applies to the installed app.</p>
+          </div>
+          <span class="switch"><input type="checkbox" id="launchAtLogin"><span></span></span>
+        </div>
+        <div class="row">
+          <div>
+            <label for="launchMuted">Start muted</label>
+            <p class="hint">Launch with sounds off until you switch them on.</p>
+          </div>
+          <span class="switch"><input type="checkbox" id="launchMuted"><span></span></span>
+        </div>
+      </div>
 
-  <div class="hint">Toggle on/off anytime with the global hotkey ⌘/Ctrl+Alt+K.</div>
+      <div class="group">
+        <h2>Appearance</h2>
+        <div class="row">
+          <div><label for="theme">Theme</label></div>
+          <select id="theme">
+            <option value="system">Match System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+      </div>
 
-  <script src="settings.js"></script>
+      <div class="group">
+        <h2>Reset</h2>
+        <div class="row">
+          <div>
+            <label>Restore defaults</label>
+            <p class="hint">Resets every setting, including key sounds and the shortcut.</p>
+          </div>
+          <button id="reset" class="btn">Restore Defaults</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-packs" class="page">
+      <h1>Sound Packs</h1>
+      <p class="page-desc">Real switch recordings. Press play to preview, click a card to make it active.</p>
+
+      <div class="group">
+        <h2>Output</h2>
+        <div class="row">
+          <div><label for="packs-volume">Master volume</label></div>
+          <input type="range" id="packs-volume" min="0" max="1" step="0.01">
+        </div>
+        <div class="row">
+          <div>
+            <label for="packs-enabled">Mute</label>
+            <p class="hint">Same as the master switch on the General page.</p>
+          </div>
+          <span class="switch"><input type="checkbox" id="packs-enabled"><span></span></span>
+        </div>
+      </div>
+
+      <div id="pack-list"></div>
+    </section>
+
+    <section id="page-keys" class="page">
+      <h1>Key Sounds</h1>
+      <p class="page-desc">Tune which keys make sound and how loud they are. Categories without a dedicated recording use the pack's regular-key sound.</p>
+
+      <div class="group">
+        <h2>Playback</h2>
+        <div class="row">
+          <div>
+            <label for="playRelease">Sound on key release</label>
+            <p class="hint">Plays the softer up-click when a key is let go.</p>
+          </div>
+          <span class="switch"><input type="checkbox" id="playRelease"><span></span></span>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>Categories</h2>
+        <div id="category-list"></div>
+        <div class="row">
+          <div><label>Reset key sounds</label></div>
+          <button id="reset-categories" class="btn">Reset Key Sounds</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-shortcuts" class="page">
+      <h1>Shortcuts</h1>
+      <p class="page-desc">One global shortcut: it toggles keyboard sounds from any app.</p>
+
+      <div class="group">
+        <h2>Toggle sounds</h2>
+        <div class="row">
+          <div>
+            <label>Shortcut</label>
+            <p class="hint" id="shortcut-display"></p>
+          </div>
+          <button id="record-shortcut" class="btn">Change…</button>
+        </div>
+        <p class="hint">Press the new combination, then release. Needs at least one modifier (Cmd/Ctrl/Alt/Shift) plus a letter or number. Esc cancels.</p>
+        <p id="shortcut-status" class="status hidden" role="status"></p>
+        <div class="row">
+          <div>
+            <label>Default</label>
+            <p class="hint">⌘/Ctrl + Alt + K</p>
+          </div>
+          <button id="reset-shortcut" class="btn">Restore Default</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-about" class="page">
+      <h1>About KeyClick</h1>
+      <div class="about-head">
+        <img src="../../build/icon.png" alt="KeyClick app icon" class="about-icon">
+        <div>
+          <div class="about-name">KeyClick</div>
+          <div class="about-version" id="about-version">Version —</div>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>What it does</h2>
+        <p>KeyClick plays a mechanical-keyboard sound on every keypress, system-wide, from the menu bar. The sounds are real recordings of 13 different switches, plus a fully synthesized Funny Mode pack.</p>
+      </div>
+
+      <div class="group">
+        <h2>Privacy</h2>
+        <p>KeyClick sees only that a key went down or up — a numeric key code, never the characters you type. It keeps no keystroke history: the only thing stored on disk is your settings file. All processing happens on your Mac; nothing is recorded or sent anywhere. Password fields stay invisible to all global listeners by macOS design (Secure Keyboard Entry).</p>
+      </div>
+
+      <div class="group">
+        <h2>Open source</h2>
+        <p>MIT licensed. Sound packs come from the MIT-licensed kbsim project by tplai.</p>
+        <p>
+          <button class="link" id="kbsim-link">kbsim on GitHub</button>
+          ·
+          <button class="link" id="repo-link">KeyClick on GitHub</button>
+        </p>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="settings.js"></script>
 </body>
 </html>

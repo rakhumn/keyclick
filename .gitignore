@@ -1,5 +1,5 @@
 node_modules/
 dist/
 out/
-release/
+/release/
 .DS_Store

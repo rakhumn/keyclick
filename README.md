@@ -1,6 +1,6 @@
 # KeyClick
 
-Mechanical keyboard sounds for any keyboard, on every physical keypress — even in background apps. Lives in the menu bar.
+**A Rakhman Muratbek product.** Mechanical keyboard sounds for any keyboard, on every physical keypress — even in background apps. Lives in the menu bar.
 
 ## Install (macOS)
 
@@ -105,6 +105,14 @@ The old app bundle is replaced in place and settings never live inside the app, 
 2. If you enabled **Launch at login**, turn it off first (Settings → General), or remove it in System Settings → General → Login Items.
 3. Drag `KeyClick.app` from /Applications to the Trash.
 4. Optional: delete `~/Library/Application Support/KeyClick/` to remove your settings.
+
+## Credits & license
+
+- **KeyClick** is maintained and published by **Rakhman Muratbek** and licensed under the MIT License (see `LICENSE`).
+- KeyClick builds on the MIT-licensed **Actuate** project by anujpatel224 — its copyright notice is preserved in `LICENSE` as required.
+- The 13 recorded switch packs come from the MIT-licensed [kbsim](https://github.com/tplai/kbsim) project by tplai.
+- **Funny Mode** sounds are original synthesizations generated in this repository — no third-party audio.
+- Runtime dependencies (bundled with the app): [Electron](https://github.com/electron/electron) (MIT, which itself packages Chromium and Node.js under their own permissive licenses), [uiohook-napi](https://github.com/SnosMe/uiohook-napi) (MIT), [electron-updater](https://github.com/electron-userland/electron-builder) (MIT).
 
 ## Troubleshooting
 

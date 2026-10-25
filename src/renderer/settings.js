@@ -408,6 +408,19 @@ $('reset-categories').addEventListener('click', () => {
 
 $('reset-shortcut').addEventListener('click', () => api.set({ toggleShortcut: DEFAULT_SHORTCUT }));
 
+function applyUpdateStatus(status) {
+  const el = $('update-status');
+  el.textContent = status && status.text ? status.text : 'Checking is done from the installed app.';
+  $('update-restart').classList.toggle('hidden', !(status && status.ready));
+}
+
+$('update-check').addEventListener('click', async () => {
+  $('update-status').textContent = 'Checking…';
+  await api.checkForUpdates();
+});
+$('update-restart').addEventListener('click', () => api.restartToUpdate());
+api.onUpdateStatus(applyUpdateStatus);
+
 $('repo-link').addEventListener('click', () => api.openExternal('https://github.com/rakhumn/keyclick'));
 $('kbsim-link').addEventListener('click', () => api.openExternal('https://github.com/tplai/kbsim'));
 
@@ -436,6 +449,7 @@ api.onShortcutConflict(({ attempted, active }) => {
 // ---------- init ----------
 
 function absorbSnapshot(snap) {
+  applyUpdateStatus(snap.updateStatus);
   extras = {
     ...extras,
     version: snap.version || extras.version,
@@ -458,6 +472,7 @@ function absorbSnapshot(snap) {
       shortcutOk: snap.shortcutOk !== false,
     };
     lastShortcut = snap.toggleShortcut;
+    applyUpdateStatus(snap.updateStatus);
     buildPackSelect();
     $('about-version').textContent = 'Version ' + extras.version;
     applySettings(snap);

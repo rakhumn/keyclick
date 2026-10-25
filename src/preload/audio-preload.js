@@ -7,6 +7,9 @@ contextBridge.exposeInMainWorld('keyclick', {
   onSettingsChanged: (callback) => {
     ipcRenderer.on('settings-changed', (_event, payload) => callback(payload));
   },
+  onPreviewCommand: (callback) => {
+    ipcRenderer.on('preview-pack', (_event, payload) => callback(payload));
+  },
   reportPackStatus: (status) => {
     ipcRenderer.send('pack-load-status', status);
   },

@@ -16,6 +16,11 @@ contextBridge.exposeInMainWorld('keyclickSettings', {
   onShowPage: (callback) => {
     ipcRenderer.on('show-page', (_event, page) => callback(page));
   },
+  onUpdateStatus: (callback) => {
+    ipcRenderer.on('update-status', (_event, payload) => callback(payload));
+  },
   openExternal: (url) => ipcRenderer.invoke('app:open-external', url),
   openPrivacySettings: () => ipcRenderer.invoke('app:open-privacy-settings'),
+  checkForUpdates: () => ipcRenderer.invoke('update:check'),
+  restartToUpdate: () => ipcRenderer.invoke('update:restart'),
 });

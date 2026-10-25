@@ -10,6 +10,7 @@ const { Store, DEFAULTS, sanitizePatch } = require('./store');
 const { PACKS, packDir } = require('./packs');
 const { categoryFor, nameFor } = require('./keymap');
 const { keyboardTrayIcon } = require('./icon');
+const { autoUpdater } = require('electron-updater');
 
 const PACK_IDS = PACKS.map((p) => p.id);
 // Only these URLs may be opened from the renderer; anything else is dropped.
@@ -23,6 +24,7 @@ let hookOk = true;
 let shortcutOk = true;
 let pendingSettingsPage = null;
 let trayMenuSignature = '';
+let lastUpdateStatus = { text: '', kind: '', version: '', ready: false };
 const heldKeys = new Set();
 
 function resolvedTheme() {
@@ -45,6 +47,39 @@ function pushStateToAudioWindow() {
     playRelease: store.data.playRelease,
     categories: store.data.categories,
   });
+}
+
+function sendPreviewCommand(command) {
+  if (audioWindow) audioWindow.webContents.send('preview-pack', command);
+}
+
+function sendUpdateStatus(status) {
+  lastUpdateStatus = status;
+  if (settingsWindow) settingsWindow.webContents.send('update-status', status);
+}
+
+function setupAutoUpdater() {
+  autoUpdater.autoDownload = true;
+  // Never restart on our own — the user presses "Restart to Update".
+  autoUpdater.autoInstallOnAppQuit = false;
+  autoUpdater.on('update-available', (info) =>
+    sendUpdateStatus({ text: 'Downloading KeyClick ' + (info.version || '') + '…', kind: 'info', version: info.version || '', ready: false }));
+  autoUpdater.on('download-progress', (progress) =>
+    sendUpdateStatus({ text: 'Downloading update… ' + Math.round(progress.percent || 0) + '%', kind: 'info', version: '', ready: false }));
+  autoUpdater.on('update-not-available', () =>
+    sendUpdateStatus({ text: 'KeyClick is up to date.', kind: 'ok', version: '', ready: false }));
+  autoUpdater.on('update-downloaded', (info) =>
+    sendUpdateStatus({ text: 'KeyClick ' + (info.version || '') + ' is ready to install.', kind: 'ok', version: info.version || '', ready: true }));
+  autoUpdater.on('error', (err) =>
+    sendUpdateStatus({ text: 'Update error: ' + (err && err.message ? err.message : String(err)), kind: 'error', version: '', ready: false }));
+
+  if (app.isPackaged) {
+    autoUpdater.checkForUpdates().catch(() => {
+      // surfaced to Settings via the 'error' event
+    });
+  } else {
+    lastUpdateStatus = { text: 'Updates apply to the installed KeyClick.app (skipped while running from source).', kind: 'info', version: '', ready: false };
+  }
 }
 
 function syncLoginItem() {
@@ -111,6 +146,7 @@ function settingsSnapshot() {
     packs: PACKS.map((p) => ({ ...p, url: packUrlFor(p.id) })),
     version: app.getVersion(),
     platform: process.platform,
+    updateStatus: lastUpdateStatus,
     hookOk,
     shortcutOk,
   };
@@ -123,7 +159,12 @@ function buildTrayMenu() {
     label: p.caption,
     type: 'radio',
     checked: pack === p.id,
-    click: () => updateSettings({ pack: p.id }),
+    click: () => {
+      updateSettings({ pack: p.id });
+      // Audible confirmation of the pick. Native menus expose no per-item
+      // hover events in Electron, so selection time is the closest hook.
+      sendPreviewCommand({ type: 'play', pack: p.id, url: packUrlFor(p.id) });
+    },
   }));
 
   const menu = Menu.buildFromTemplate([
@@ -147,6 +188,13 @@ function buildTrayMenu() {
     { type: 'separator' },
     { label: 'Quit KeyClick', click: () => app.quit() },
   ]);
+
+  // The only menu-level lifecycle events Electron exposes on macOS. Per-item
+  // *hover* events do not exist in the menu API, so the menu open previews
+  // the active pack and closing stops any preview.
+  menu.on('will-show', () =>
+    sendPreviewCommand({ type: 'play', pack: store.data.pack, url: packUrlFor(store.data.pack) }));
+  menu.on('will-close', () => sendPreviewCommand({ type: 'stop' }));
 
   tray.setContextMenu(menu);
 }
@@ -328,6 +376,25 @@ if (!app.requestSingleInstanceLock()) {
         });
       }
     });
+
+    ipcMain.handle('update:check', () => {
+      if (!app.isPackaged) {
+        sendUpdateStatus({ text: 'Updates apply to the installed KeyClick.app (skipped while running from source).', kind: 'info', version: '', ready: false });
+        return { ok: false, dev: true };
+      }
+      autoUpdater.checkForUpdates().catch((err) => {
+        sendUpdateStatus({ text: 'Update check failed: ' + (err && err.message ? err.message : String(err)), kind: 'error', version: '', ready: false });
+      });
+      return { ok: true };
+    });
+
+    ipcMain.handle('update:restart', () => {
+      if (!app.isPackaged || !lastUpdateStatus.ready) return false;
+      autoUpdater.quitAndInstall(false, true);
+      return true;
+    });
+
+    setupAutoUpdater();
 
     console.log('KeyClick running in the tray/menu bar. Toggle with ' + store.data.toggleShortcut + '.');
   });

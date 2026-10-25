@@ -84,6 +84,21 @@ Your settings (sound pack, volume, theme, shortcuts, key-sound tweaks) live in `
 
 The old app bundle is replaced in place and settings never live inside the app, so there is nothing else to clean up.
 
+## Releasing a new version
+
+1. Bump `version` in `package.json` (and commit).
+2. Build: `npm run dist:mac` — produces `release/KeyClick-<version>-arm64.dmg` (for humans) and `KeyClick-<version>-arm64-mac.zip` + `latest-mac.yml` (the zip is what the in-app updater installs).
+3. Publish all four artifacts plus `latest-mac.yml` to a GitHub Release — the in-app updater reads `latest-mac.yml` from releases:
+   ```
+   gh release create v<version> \
+     release/KeyClick-<version>-arm64.dmg release/KeyClick-<version>-arm64.dmg.blockmap \
+     release/KeyClick-<version>-arm64-mac.zip release/KeyClick-<version>-arm64-mac.zip.blockmap \
+     release/latest-mac.yml
+   ```
+4. Installed apps pick it up automatically (check at launch, background download; restart happens only when the user clicks **Restart to Update** in Settings → General → Updates).
+
+**Signing caveat:** the update plumbing is complete, but macOS refuses to *apply* updates to apps without a matching Developer ID signature. Today's builds are ad-hoc signed, so a fresh install of each new DMG still works (settings survive), while one-click in-app updating needs: an Apple Developer Program membership, a "Developer ID Application" certificate in your keychain, and building with `CSC_NAME="Developer ID Application: <Your Name>" npm run dist:mac` plus notarization credentials — `build/afterPack.js` then leaves the real signature alone.
+
 ## Uninstall
 
 1. Quit KeyClick from the tray icon.

@@ -110,6 +110,50 @@ async function loadPackBuffers(packUrl, packId) {
   console.log('Pack loaded: ' + packUrl);
 }
 
+// --- pack previews (tray Switch Sound menu + Settings) ---
+// One voice at a time, routed through masterGain so the volume setting
+// applies; any new preview or stopPreview() kills the previous one, and
+// nothing ever loops, so there is no path to stuck or overlapping audio.
+
+let previewSource = null;
+const previewCache = new Map();
+
+function stopPreview() {
+  if (!previewSource) return;
+  try {
+    previewSource.stop();
+  } catch {
+    // already ended
+  }
+  previewSource = null;
+}
+
+async function previewPack(packId, packUrl) {
+  stopPreview();
+  let buffer = previewCache.get(packId);
+  if (buffer === undefined) {
+    buffer = await fetchFirstBuffer(`${packUrl}/press/GENERIC_R1`);
+    previewCache.set(packId, buffer);
+  }
+  if (!buffer) return;
+  if (audioContext.state === 'suspended') {
+    try {
+      await audioContext.resume();
+    } catch {
+      return;
+    }
+  }
+  stopPreview(); // cancel anything that started while we awaited
+  const source = audioContext.createBufferSource();
+  source.buffer = buffer;
+  source.connect(masterGain);
+  previewSource = source;
+  source.onended = () => {
+    if (previewSource === source) previewSource = null;
+  };
+  source.start(0);
+}
+
 function pickBuffer(bank, category) {
   const buffers = bank[category];
   if (!buffers || buffers.length === 0) return null;
@@ -148,6 +192,17 @@ window.keyclick.onSettingsChanged((next) => {
   state = { ...state, ...next };
   masterGain.gain.value = state.volume;
   if (packChanged) loadPack(state.packUrl, state.pack);
+});
+
+window.keyclick.onPreviewCommand((command) => {
+  if (!command || typeof command !== 'object') return;
+  if (command.type === 'stop') {
+    stopPreview();
+    return;
+  }
+  if (command.type === 'play' && typeof command.pack === 'string' && typeof command.url === 'string') {
+    previewPack(command.pack, command.url);
+  }
 });
 
 window.keyclick.onKeyEvent(async (event) => {
